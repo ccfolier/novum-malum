@@ -1,22 +1,209 @@
+---
+import "normalize.css";
+---
+
 <!doctype html>
-<html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
-	</head>
-	<body>
-		<slot />
-	</body>
+<script is:inline>
+  // Check for saved theme preference or use system preference
+  const getInitialTheme = () => {
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme) {
+      return savedTheme;
+    }
+    return window.matchMedia("(prefers-color-scheme: dark)").matches
+      ? "dark"
+      : "light";
+  };
+
+  // Apply theme immediately to prevent flash
+  const theme = getInitialTheme();
+  document.documentElement.setAttribute("data-theme", theme);
+
+  // Function to toggle theme
+  function toggleTheme() {
+    const currentTheme = document.documentElement.getAttribute("data-theme");
+    const newTheme = currentTheme === "light" ? "dark" : "light";
+
+    document.documentElement.setAttribute("data-theme", newTheme);
+    localStorage.setItem("theme", newTheme);
+  }
+</script>
+
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&family=Playfair+Display:wght@400;700&family=Roboto+Mono&display=swap"
+      rel="stylesheet"
+    />
+    <meta name="generator" content={Astro.generator} />
+    <title>Novum Malum</title>
+  </head>
+  <body>
+    <div class="theme-toggle">
+      <button id="theme-toggle-btn" aria-label="Toggle theme">
+        <svg
+          class="sun-icon"
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="12" cy="12" r="5"></circle>
+          <line x1="12" y1="1" x2="12" y2="3"></line>
+          <line x1="12" y1="21" x2="12" y2="23"></line>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+          <line x1="1" y1="12" x2="3" y2="12"></line>
+          <line x1="21" y1="12" x2="23" y2="12"></line>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+        <svg
+          class="moon-icon"
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+      </button>
+    </div>
+    <slot />
+    <div class="overlay"></div>
+
+    <script is:inline>
+      // Add event listener to theme toggle button
+      const themeToggleBtn = document.getElementById("theme-toggle-btn");
+      if (themeToggleBtn) {
+        themeToggleBtn.addEventListener("click", function () {
+          const currentTheme =
+            document.documentElement.getAttribute("data-theme");
+          const newTheme = currentTheme === "light" ? "dark" : "light";
+
+          document.documentElement.setAttribute("data-theme", newTheme);
+          localStorage.setItem("theme", newTheme);
+        });
+      }
+    </script>
+  </body>
 </html>
 
-<style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
+<style is:global>
+  /* Dark theme (default) */
+  :root {
+    --color-background: #121212;
+    --color-surface: #1e1e1e;
+    --color-primary: #bb86fc;
+    --color-text: #e0e0e0;
+    --color-text-secondary: #a0a0a0;
+    --color-overlay: rgba(0, 0, 0, 0.8);
+    --color-border: rgba(255, 255, 255, 0.1);
+    --text-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+    --title-color: #ffffff;
+  }
+
+  /* Light theme */
+  :root[data-theme="light"] {
+    --color-background: #f5f5f5;
+    --color-surface: #ffffff;
+    --color-primary: #6200ee;
+    --color-text: #121212;
+    --color-text-secondary: #666666;
+    --color-overlay: rgba(255, 255, 255, 0.8);
+    --color-border: rgba(0, 0, 0, 0.1);
+    --text-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    --title-color: #000000;
+  }
+
+  html,
+  body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--color-background);
+    color: var(--color-text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+      Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  }
+
+  h1.site-title,
+  h1.page-title {
+    font-family: "Playfair Display", "Noto Serif JP", serif;
+    font-weight: 700;
+  }
+
+  .raw-link {
+    font-family: "Roboto Mono", monospace;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  .theme-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 10000;
+  }
+
+  .theme-toggle button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text);
+    background-color: var(--color-surface);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+  }
+
+  .theme-toggle button:hover {
+    transform: scale(1.1);
+  }
+
+  /* Show/hide icons based on theme */
+  :root[data-theme="light"] .moon-icon {
+    display: none;
+  }
+
+  :root[data-theme="dark"] .sun-icon {
+    display: none;
+  }
+
+  .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    background: radial-gradient(
+      circle at center,
+      transparent 0%,
+      var(--color-overlay) 100%
+    );
+    z-index: 9999;
+  }
 </style>

@@ -1,11 +1,99 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
+import Layout from "../layouts/Layout.astro";
+import { getAllStories } from "../utils/stories";
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+const stories = getAllStories();
 ---
 
 <Layout>
-	<Welcome />
+  <main>
+    <h1 class="site-title">Novum Malum</h1>
+    <div class="stories">
+      {
+        stories.map((story) => (
+          <div class="story-item">
+            <a href={`/pages/${story.id}`} class="story-link">
+              <span class="title">{story.title}</span>
+              <span class="author">{story.author}</span>
+            </a>
+          </div>
+        ))
+      }
+    </div>
+  </main>
 </Layout>
+
+<style>
+  main {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  .site-title {
+    font-size: 7rem;
+    text-align: center;
+    margin-bottom: 4rem;
+    color: var(--title-color);
+    text-shadow: var(--text-shadow);
+    letter-spacing: 3px;
+    line-height: 1.1;
+  }
+
+  .stories {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .story-item {
+    padding: 0.8rem 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .story-link {
+    text-decoration: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    color: inherit;
+  }
+
+  .title {
+    color: var(--color-text);
+    font-size: 1.2rem;
+    letter-spacing: 0.5px;
+    position: relative;
+    transition: color 0.2s ease;
+  }
+
+  .story-link:hover .title {
+    color: var(--color-primary);
+  }
+
+  .title:before {
+    content: "→";
+    opacity: 0;
+    margin-right: 0.5rem;
+    transition:
+      opacity 0.2s ease,
+      transform 0.2s ease;
+    display: inline-block;
+    transform: translateX(-5px);
+    position: absolute;
+    left: -1.5rem;
+  }
+
+  .story-link:hover .title:before {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .author {
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
+  }
+</style>

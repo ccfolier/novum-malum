@@ -1,0 +1,68 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { getAllStories, type Story } from "../../utils/stories";
+
+export function getStaticPaths() {
+  const stories = getAllStories();
+  return stories.map((story) => ({
+    params: { id: story.id },
+    props: { story },
+  }));
+}
+
+interface Props {
+  story: Story;
+}
+
+const { story } = Astro.props;
+---
+
+<Layout>
+  <main>
+    <nav>
+      <a href="/" class="home-link">← ホーム</a>
+    </nav>
+    <h1 class="page-title">{story.title}</h1>
+    <p class="author">{story.author}</p>
+    <article>{story.text}</article>
+  </main>
+</Layout>
+
+<style>
+  main {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  .home-link {
+    display: inline-block;
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    margin-bottom: 2rem;
+    transition: color 0.2s ease;
+  }
+
+  .home-link:hover {
+    color: var(--color-primary);
+  }
+
+  h1.page-title {
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+    color: var(--title-color);
+    text-shadow: var(--text-shadow);
+  }
+
+  .author {
+    font-size: 1.2rem;
+    color: var(--color-text-secondary);
+    margin-bottom: 2rem;
+  }
+
+  article {
+    line-height: 1.8;
+    font-size: 1.1rem;
+    white-space: pre-wrap;
+  }
+</style>

@@ -9,6 +9,10 @@
     "astro": "astro"
   },
   "dependencies": {
-    "astro": "^5.3.1"
+    "astro": "^5.3.1",
+    "normalize.css": "^8.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.5"
   }
 }
