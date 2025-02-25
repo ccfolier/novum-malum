@@ -1,6 +1,7 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import { getAllStories, type Story } from "../../utils/stories";
+import { garbleText, partialGarble } from "../../utils/textGarbler";
 
 export function getStaticPaths() {
   const stories = getAllStories();
@@ -20,11 +21,11 @@ const { story } = Astro.props;
 <Layout>
   <main>
     <nav>
-      <a href="/" class="home-link">← ホーム</a>
+      <a href="/" class="home-link">← Back</a>
     </nav>
-    <h1 class="page-title">{story.title}</h1>
-    <p class="author">{story.author}</p>
-    <article>{story.text}</article>
+    <h1 class="page-title">{garbleText(story.title, 0)}</h1>
+    <p class="author">{garbleText(story.author, 0.5)}</p>
+    <article>{partialGarble(story.text, 0)}</article>
   </main>
 </Layout>
 
@@ -33,6 +34,7 @@ const { story } = Astro.props;
     max-width: 800px;
     margin: 0 auto;
     padding: 2rem;
+    padding-bottom: 8rem;
   }
 
   .home-link {

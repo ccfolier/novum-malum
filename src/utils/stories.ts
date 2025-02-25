@@ -9,8 +9,27 @@ export interface Story {
 }
 
 export function parseStoryFile(filePath: string): Story {
-  const content = fs.readFileSync(filePath, "utf-8");
-  const [header, ...textParts] = content.split("---\n");
+  // Read file content and remove BOM if present
+  let content = fs.readFileSync(filePath, "utf-8");
+  // Remove BOM character if present
+  if (content.charCodeAt(0) === 0xfeff) {
+    content = content.slice(1);
+  }
+
+  // Handle different line endings (CRLF, LF)
+  // First normalize to LF
+  content = content.replace(/\r\n/g, "\n");
+
+  // Split by the separator, which could be "---" followed by a newline
+  const parts = content.split(/---\n/);
+
+  // If there's only one part, try splitting by "---" without a newline
+  if (parts.length === 1) {
+    parts.push(...content.split(/---/).slice(1));
+  }
+
+  const [header, ...textParts] = parts;
+  // Join the text parts back together in case there are multiple "---" in the text
   const text = textParts.join("---\n").trim();
 
   const titleMatch = header.match(/title: (.*)/);

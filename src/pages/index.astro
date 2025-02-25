@@ -1,20 +1,23 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import { getAllStories } from "../utils/stories";
+import { garbleText } from "../utils/textGarbler";
 
 const stories = getAllStories();
 ---
 
 <Layout>
   <main>
-    <h1 class="site-title">Novum Malum</h1>
+    <h1 class="site-title">
+      {garbleText("Novum Malum", 0.5)}
+    </h1>
     <div class="stories">
       {
         stories.map((story) => (
           <div class="story-item">
             <a href={`/pages/${story.id}`} class="story-link">
-              <span class="title">{story.title}</span>
-              <span class="author">{story.author}</span>
+              <span class="title">{garbleText(story.title, 0.5)}</span>
+              <span class="author">{garbleText(story.author, 0.5)}</span>
             </a>
           </div>
         ))
@@ -28,6 +31,7 @@ const stories = getAllStories();
     max-width: 800px;
     margin: 0 auto;
     padding: 2rem;
+    padding-bottom: 8rem;
   }
 
   .site-title {
@@ -38,6 +42,7 @@ const stories = getAllStories();
     text-shadow: var(--text-shadow);
     letter-spacing: 3px;
     line-height: 1.1;
+    word-break: break-all;
   }
 
   .stories {
@@ -70,8 +75,29 @@ const stories = getAllStories();
     transition: color 0.2s ease;
   }
 
-  .story-link:hover .title {
+  .story-link:hover .title,
+  .story-link:hover .author {
     color: var(--color-primary);
+  }
+
+  /* 文字化け解除用のスタイル */
+  .ungarbled {
+    position: relative;
+  }
+
+  .ungarbled::after {
+    content: attr(data-original-text);
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--color-background);
+    z-index: 1;
+  }
+
+  .site-title.ungarbled::after {
+    content: attr(data-original-title);
   }
 
   .title:before {
